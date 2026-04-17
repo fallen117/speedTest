@@ -3,52 +3,11 @@
 Medidor de velocidad de internet que corre completamente en tu equipo.  
 Mide: **Latencia (ping)**, **Jitter**, **Descarga** y **Subida**.
 
----
-
-## Requisitos
-
-- **Node.js** v16 o superior → https://nodejs.org
-- Conexión a internet activa
+- Uso de tecnología Cloudeflare para medición de elementos en la conexión.
+Alojamiento en Web Service de Render.
 
 ---
 
-## Instalación y ejecución
-
-### 1. Descomprime el archivo ZIP
-
-Extrae la carpeta `speedtest` en cualquier lugar de tu equipo.
-
-### 2. Abre una terminal en esa carpeta
-
-```bash
-cd speedtest
-```
-
-### 3. Instala las dependencias (solo la primera vez)
-
-```bash
-npm install
-```
-
-### 4. Inicia el servidor
-
-```bash
-npm start
-```
-
-Verás este mensaje:
-
-```
-🚀  Speed Test Server corriendo en http://localhost:3000
-```
-
-### 5. Abre el navegador
-
-Ve a: **http://localhost:3000**
-
-Haz clic en **INICIAR TEST** y espera unos segundos. ✅
-
----
 
 ## ¿Qué mide?
 
@@ -60,12 +19,6 @@ Haz clic en **INICIAR TEST** y espera unos segundos. ✅
 | **Subida**    | Velocidad real de subida de datos en Mbps                     |
 
 También muestra información del navegador, tipo de conexión (si el navegador lo soporta), IP detectada y hora del servidor.
-
----
-
-## 🛑 Detener el servidor
-
-Presiona `Ctrl + C` en la terminal.
 
 ---
 
