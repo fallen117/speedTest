@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NetPulse — Speed Test</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow:wght@300;400;600;700&family=Barlow+Condensed:wght@700;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="scanline"></div>
+  <div class="noise"></div>
+
+  <header>
+    <div class="logo">
+      <span class="logo-icon">◈</span>
+      <span class="logo-text">NET<strong>PULSE</strong></span>
+    </div>
+    <div class="header-right">
+      <div class="header-meta">
+        <span id="live-time">--:--:--</span>
+        <span class="dot-sep">·</span>
+        <span id="client-ip">IP: ---</span>
+      </div>
+      <div class="theme-switcher">
+        <button class="theme-btn" id="btn-dark" onclick="setTheme('dark')" title="Modo oscuro" aria-label="Modo oscuro">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/>
+          </svg>
+        </button>
+        <button class="theme-btn" id="btn-light" onclick="setTheme('light')" title="Modo claro" aria-label="Modo claro">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1"  x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22"  x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1"  y1="12" x2="3"  y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22"  y1="19.78" x2="5.64"  y2="18.36"/>
+            <line x1="18.36" y1="5.64"  x2="19.78" y2="4.22"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ── Gauge central ── -->
+    <section class="gauge-section">
+      <div class="gauge-wrap">
+        <svg class="gauge-svg" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+          <!-- Track arc -->
+          <path class="gauge-track" d="M 30 175 A 120 120 0 0 1 270 175" fill="none" stroke-width="10" stroke-linecap="round"/>
+          <!-- Value arc -->
+          <path id="gauge-arc" d="M 30 175 A 120 120 0 0 1 270 175" fill="none" stroke-width="10" stroke-linecap="round"
+                stroke-dasharray="376" stroke-dashoffset="376"/>
+          <!-- Needle -->
+          <line id="gauge-needle" x1="150" y1="175" x2="150" y2="65"
+                stroke="var(--accent)" stroke-width="2" stroke-linecap="round"
+                transform="rotate(-90, 150, 175)" />
+          <circle cx="150" cy="175" r="6" fill="var(--accent)" />
+          <!-- Scale ticks -->
+          <g id="gauge-ticks"></g>
+        </svg>
+
+        <div class="gauge-center">
+          <div id="gauge-value" class="gauge-value">0</div>
+          <div id="gauge-unit" class="gauge-unit">Mbps</div>
+          <div id="gauge-label" class="gauge-label">ESPERANDO</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Botón iniciar ── -->
+    <div class="start-wrap">
+      <button id="btn-start" class="btn-start" onclick="startTest()">
+        <span class="btn-ring"></span>
+        <span class="btn-text">INICIAR TEST</span>
+      </button>
+      <div id="status-msg" class="status-msg">Listo para medir tu conexión</div>
+    </div>
+
+    <!-- ── Tarjetas de resultados ── -->
+    <section class="cards-grid">
+
+      <div class="card" id="card-ping">
+        <div class="card-icon">◎</div>
+        <div class="card-body">
+          <div class="card-label">LATENCIA</div>
+          <div class="card-value"><span id="val-ping">—</span><small>ms</small></div>
+          <div class="card-bar"><div class="card-bar-fill" id="bar-ping"></div></div>
+        </div>
+      </div>
+
+      <div class="card" id="card-jitter">
+        <div class="card-icon">≋</div>
+        <div class="card-body">
+          <div class="card-label">JITTER</div>
+          <div class="card-value"><span id="val-jitter">—</span><small>ms</small></div>
+          <div class="card-bar"><div class="card-bar-fill" id="bar-jitter"></div></div>
+        </div>
+      </div>
+
+      <div class="card card--highlight" id="card-download">
+        <div class="card-icon">↓</div>
+        <div class="card-body">
+          <div class="card-label">DESCARGA</div>
+          <div class="card-value"><span id="val-download">—</span><small>Mbps</small></div>
+          <div class="card-bar"><div class="card-bar-fill" id="bar-download"></div></div>
+        </div>
+      </div>
+
+      <div class="card card--highlight" id="card-upload">
+        <div class="card-icon">↑</div>
+        <div class="card-body">
+          <div class="card-label">SUBIDA</div>
+          <div class="card-value"><span id="val-upload">—</span><small>Mbps</small></div>
+          <div class="card-bar"><div class="card-bar-fill" id="bar-upload"></div></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ── Info del sistema ── -->
+    <section class="info-section">
+      <h2 class="info-title">◈ INFORMACIÓN DE CONEXIÓN</h2>
+      <div class="info-grid">
+        <div class="info-item">
+          <span class="info-key">Navegador</span>
+          <span class="info-val" id="inf-browser">—</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">Plataforma</span>
+          <span class="info-val" id="inf-platform">—</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">Tipo de conexión</span>
+          <span class="info-val" id="inf-type">—</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">Velocidad efectiva</span>
+          <span class="info-val" id="inf-effective">—</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">RTT estimado</span>
+          <span class="info-val" id="inf-rtt">—</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">Data Saver</span>
+          <span class="info-val" id="inf-saver">—</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">Hora del servidor</span>
+          <span class="info-val" id="inf-servertime">—</span>
+        </div>
+        <div class="info-item">
+          <span class="info-key">IP detectada</span>
+          <span class="info-val" id="inf-ip">—</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Historial ── -->
+    <section class="history-section" id="history-section" style="display:none">
+      <h2 class="info-title">◈ HISTORIAL DE MEDICIONES</h2>
+      <div class="history-table-wrap">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Hora</th>
+              <th>Ping</th>
+              <th>Jitter</th>
+              <th>↓ Descarga</th>
+              <th>↑ Subida</th>
+            </tr>
+          </thead>
+          <tbody id="history-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>NetPulse Speed Test &nbsp;·&nbsp; Local Server Edition</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
