@@ -6,6 +6,7 @@ Mide: **Latencia (ping)**, **Jitter**, **Descarga** y **Subida**.
 - Uso de tecnología Cloudeflare para medición de elementos en la conexión.
 Alojamiento en Web Service de Render.
 
+https://netpulse-speedtest.onrender.com
 ---
 
 
