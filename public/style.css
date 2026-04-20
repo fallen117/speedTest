@@ -500,8 +500,44 @@ footer {
 
 /* ── Responsive ── */
 @media (max-width: 600px) {
-  header { padding: 1rem 1.2rem; }
-  .header-meta { font-size: .7rem; }
+  /* Header: logo arriba centrado, meta + switcher abajo en fila */
+  header {
+    padding: .9rem 1.2rem;
+    flex-direction: column;
+    align-items: stretch;
+    gap: .6rem;
+  }
+
+  .logo {
+    justify-content: center;
+    font-size: 1.3rem;
+  }
+
+  .header-right {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: .5rem;
+  }
+
+  .header-meta {
+    font-size: .7rem;
+    gap: .5rem;
+    flex-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .theme-switcher {
+    flex-shrink: 0;
+  }
+
+  .theme-btn { width: 28px; height: 28px; }
+  .theme-btn svg { width: 14px; height: 14px; }
+
+  /* Resto del layout */
   .cards-grid { grid-template-columns: 1fr; }
   .gauge-wrap { width: 260px; height: 175px; }
   .gauge-value { font-size: 2.8rem; }
@@ -549,7 +585,7 @@ body.light .scanline { display: none; }
 
 /* Header claro */
 body.light header {
-  background: rgba(240,244,248,.85);
+  background: rgba(13, 17, 23, .8);
   border-bottom-color: var(--border);
 }
 
@@ -606,11 +642,4 @@ body.light .theme-btn.active {
 /* Footer en claro */
 body.light footer {
   border-top-color: var(--border);
-}
-
-/* Responsive — switcher en móvil */
-@media (max-width: 600px) {
-  .header-right { gap: .7rem; }
-  .theme-btn { width: 28px; height: 28px; }
-  .theme-btn svg { width: 14px; height: 14px; }
 }
