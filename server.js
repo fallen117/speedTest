@@ -14,46 +14,68 @@ app.use(express.static(path.join(__dirname, 'public')));
 //   Cloudflare → tu router → tu PC  (mide tu bajada real de internet)
 //
 // Cloudflare ofrece archivos de 10 MB, 25 MB, 100 MB sin auth ni CORS.
+// Retry automático implementado para mayor robustez.
 app.get('/api/download-proxy', (req, res) => {
-  // Alternamos tamaños para que las 3 rondas usen archivos distintos
+  const MAX_RETRIES = 3;
+  const TIMEOUT_MS = 45000;
   const round = parseInt(req.query.r) || 0;
-  const sizes  = ['10mb', '25mb', '10mb'];
-  const size   = sizes[round % sizes.length];
+  const sizes = ['10mb', '25mb', '10mb'];
+  const size = sizes[round % sizes.length];
   const target = `https://speed.cloudflare.com/__down?bytes=${size === '10mb' ? 10000000 : 25000000}`;
 
   res.setHeader('Cache-Control', 'no-store, no-cache');
   res.setHeader('Content-Type', 'application/octet-stream');
 
   const url = new URL(target);
-  const lib  = url.protocol === 'https:' ? https : http;
+  const lib = url.protocol === 'https:' ? https : http;
 
-  const proxyReq = lib.get({
-    hostname: url.hostname,
-    path:     url.pathname + url.search,
-    headers:  {
-      'User-Agent': 'NetPulse-SpeedTest/1.0',
-      'Accept':     '*/*'
-    }
-  }, (proxyRes) => {
-    if (proxyRes.statusCode !== 200) {
-      res.status(502).json({ error: `Upstream ${proxyRes.statusCode}` });
-      return;
-    }
-    if (proxyRes.headers['content-length']) {
-      res.setHeader('Content-Length', proxyRes.headers['content-length']);
-    }
-    proxyRes.pipe(res);
-  });
+  function makeProxyRequest(attempt) {
+    const proxyReq = lib.get({
+      hostname: url.hostname,
+      path: url.pathname + url.search,
+      headers: {
+        'User-Agent': 'NetPulse-SpeedTest/1.0',
+        'Accept': '*/*'
+      },
+      timeout: TIMEOUT_MS
+    }, (proxyRes) => {
+      if (proxyRes.statusCode !== 200) {
+        if (attempt < MAX_RETRIES - 1) {
+          console.log(`Proxy attempt ${attempt + 1} failed (${proxyRes.statusCode}), retrying...`);
+          setTimeout(() => makeProxyRequest(attempt + 1), 1000 * (attempt + 1));
+          return;
+        }
+        res.status(502).json({ error: `Cloudflare no respondió (${proxyRes.statusCode})`, code: 'CLOUDFLARE_ERROR' });
+        return;
+      }
+      if (proxyRes.headers['content-length']) {
+        res.setHeader('Content-Length', proxyRes.headers['content-length']);
+      }
+      proxyRes.pipe(res);
+    });
 
-  proxyReq.on('error', (err) => {
-    console.error('Proxy error:', err.message);
-    if (!res.headersSent) res.status(502).json({ error: err.message });
-  });
+    proxyReq.on('error', (err) => {
+      if (attempt < MAX_RETRIES - 1) {
+        console.log(`Proxy attempt ${attempt + 1} error (${err.message}), retrying...`);
+        setTimeout(() => makeProxyRequest(attempt + 1), 1000 * (attempt + 1));
+        return;
+      }
+      console.error('Proxy error:', err.message);
+      if (!res.headersSent) res.status(502).json({ error: err.message, code: 'CONNECTION_ERROR' });
+    });
 
-  proxyReq.setTimeout(30000, () => {
-    proxyReq.destroy();
-    if (!res.headersSent) res.status(504).json({ error: 'Timeout' });
-  });
+    proxyReq.setTimeout(TIMEOUT_MS, () => {
+      proxyReq.destroy();
+      if (attempt < MAX_RETRIES - 1) {
+        console.log(`Proxy attempt ${attempt + 1} timeout, retrying...`);
+        setTimeout(() => makeProxyRequest(attempt + 1), 1000 * (attempt + 1));
+        return;
+      }
+      if (!res.headersSent) res.status(504).json({ error: 'Tiempo de espera agotado', code: 'TIMEOUT' });
+    });
+  }
+
+  makeProxyRequest(0);
 });
 
 // ─── Upload test: recibe datos y los descarta ─────────────────────────────────

@@ -133,24 +133,43 @@ async function measurePing(samples = 10) {
   return { ping: Math.round(avg), jitter: Math.round(jitter) };
 }
 
+// ── Mensajes de error claros ────────────────────────────────────────────────────────
+const ERROR_MESSAGES = {
+  CLOUDFLARE_ERROR: 'Cloudflare no responded. Try again later.',
+  CONNECTION_ERROR: 'connection error. Check your internet.',
+  TIMEOUT: 'Server took too long. Try again.',
+  NETWORK: 'Network error. Check your connection.',
+  UNKNOWN: 'Unknown error. Try again.'
+};
+
+function getErrorMessage(err) {
+  if (typeof err === 'object' && err !== null && err.code) {
+    return ERROR_MESSAGES[err.code] || err.message || ERROR_MESSAGES.UNKNOWN;
+  }
+  if (err instanceof Error) {
+    return err.message;
+  }
+  return ERROR_MESSAGES.UNKNOWN;
+}
+
 // ── Medición de descarga real (archivos desde Cloudflare CDN via proxy) ────────
 // El servidor local actúa de proxy para evitar CORS y medir bytes reales descargados
 // desde internet hacia tu equipo.
 async function measureDownload(updateFn) {
-  // Descargamos múltiples rondas para obtener un promedio estable
-  // Usamos el endpoint /api/download-proxy que redirige a Cloudflare speed test
-  const ROUNDS     = 3;
-  const speeds     = [];
+  const ROUNDS = 3;
+  const speeds = [];
+  let lastError = null;
 
   for (let r = 0; r < ROUNDS; r++) {
     const url = `/api/download-proxy?r=${r}&t=${Date.now()}`;
-    const t0  = performance.now();
+    const t0 = performance.now();
     let loaded = 0;
 
-    await new Promise((resolve, reject) => {
+    await new Promise((resolve) => {
       const xhr = new XMLHttpRequest();
       xhr.open('GET', url, true);
       xhr.responseType = 'arraybuffer';
+      xhr.timeout = 50000;
 
       xhr.onprogress = (e) => {
         loaded = e.loaded;
@@ -162,23 +181,52 @@ async function measureDownload(updateFn) {
       };
 
       xhr.onload = () => {
-        const elapsed = (performance.now() - t0) / 1000;
-        const bytes   = xhr.response?.byteLength || loaded;
-        if (elapsed > 0.1 && bytes > 0) {
-          speeds.push((bytes * 8) / (1024 * 1024 * elapsed));
+        if (xhr.status === 200) {
+          const elapsed = (performance.now() - t0) / 1000;
+          const bytes = xhr.response?.byteLength || loaded;
+          if (elapsed > 0.1 && bytes > 0) {
+            speeds.push((bytes * 8) / (1024 * 1024 * elapsed));
+          }
+        } else {
+          try {
+            const data = JSON.parse(xhr.responseText);
+            lastError = new Error(data.error || 'Download failed');
+            lastError.code = data.code;
+          } catch {
+            lastError = new Error('Download failed');
+          }
         }
         resolve();
       };
 
-      xhr.onerror = () => resolve(); // ignora errores de ronda individual
+      xhr.onerror = () => {
+        lastError = new Error('Network error');
+        lastError.code = 'NETWORK';
+        resolve();
+      };
+
+      xhr.ontimeout = () => {
+        lastError = new Error('Timeout');
+        lastError.code = 'TIMEOUT';
+        resolve();
+      };
+
       xhr.send();
     });
+
+    if (lastError && r < ROUNDS - 1) {
+      setStatus(`Retrying download (${r + 2}/${ROUNDS})...`, 'active');
+      await sleep(1500);
+    }
 
     await sleep(200);
   }
 
+  if (speeds.length === 0 && lastError) {
+    throw new Error(getErrorMessage(lastError));
+  }
+
   if (speeds.length === 0) throw new Error('No se pudo medir la descarga');
-  // Descartamos el valor más bajo (suele ser el warm-up) y promediamos el resto
   speeds.sort((a, b) => a - b);
   const usable = speeds.length > 1 ? speeds.slice(1) : speeds;
   return usable.reduce((a, b) => a + b, 0) / usable.length;
