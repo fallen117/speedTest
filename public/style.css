@@ -8,12 +8,12 @@
   --surface:   #0a0a0a;
   --surface2:  #121212;
   --border:    #1a1a2e;
-  --accent:    #1e3a5f;
-  --accent2:   #2d1f3f;
-  --green:     #1e5f3f;
-  --yellow:    #3f3f1e;
+  --accent:    #3a8ccf;
+  --accent2:   #d94a7b;
+  --green:     #2ec4a0;
+  --yellow:    #e0b030;
   --text:      #e0e0e0;
-  --text-dim:  #606060;
+  --text-dim:  #707070;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
   --font-body: 'Barlow', sans-serif;
   --font-cond: 'Barlow Condensed', sans-serif;
@@ -565,38 +565,23 @@ body.light {
   --surface:  #f5f5f5;
   --surface2: #d8d8d8;
   --border:   #b0b0b0;
-  --accent:   #1e3a5f;
-  --accent2:  #2d1f3f;
-  --green:    #1e5f3f;
-  --yellow:   #3f3f1e;
+  --accent:   #1a4f7a;
+  --accent2:  #8b2a5a;
+  --green:    #1a5a47;
+  --yellow:   #6b6b1a;
   --text:     #1a1a1a;
-  --text-dim: #707070;
+  --text-dim: #505050;
 }
 
 /* Gradientes de fondo en claro */
 body.light::before {
   background:
-    radial-gradient(ellipse 60% 40% at 20% 10%, rgba(0,180,210,.07) 0%, transparent 60%),
-    radial-gradient(ellipse 50% 50% at 80% 90%, rgba(255,64,96,.04) 0%, transparent 60%);
+    radial-gradient(ellipse 60% 40% at 20% 10%, rgba(26,79,122,.1) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 80% 90%, rgba(139,42,90,.06) 0%, transparent 60%);
 }
-
-/* Ruido más suave en claro */
-body.light .noise { opacity: .15; }
-
-/* Scanlines invisibles en claro */
-body.light .scanline { display: none; }
-
-/* Header claro */
-body.light header {
-  background: #141b24;
-  border-bottom-color: var(--border);
-}
-
-/* Gauge track en claro */
-body.light .gauge-track { stroke: var(--surface2); }
 
 /* Gauge texto en claro */
-body.light .gauge-value { text-shadow: 0 0 20px rgba(0,180,210,.25); }
+body.light .gauge-value { text-shadow: 0 0 20px rgba(26,79,122,.25); }
 
 /* Botón INICIAR en claro */
 body.light .btn-start {
@@ -606,7 +591,7 @@ body.light .btn-start {
 body.light .btn-start:hover:not(:disabled) {
   background: var(--accent);
   color: #fff;
-  box-shadow: 0 0 24px rgba(0,229,255,.35);
+  box-shadow: 0 0 24px rgba(26,79,122,.35);
 }
 body.light .btn-start:disabled {
   border-color: var(--text-dim);
@@ -620,9 +605,9 @@ body.light .card {
   box-shadow: 0 1px 4px rgba(0,0,0,.06);
 }
 body.light .card::before { background: var(--border); }
-body.light .card.active::before { background: var(--accent); box-shadow: 0 0 8px rgba(0,229,255,.4); }
-body.light .card.done::before   { background: var(--green);  box-shadow: 0 0 8px rgba(0,255,136,.3); }
-body.light .card--highlight     { border-color: rgba(0,180,210,.2); }
+body.light .card.active::before { background: var(--accent); box-shadow: 0 0 8px rgba(26,79,122,.4); }
+body.light .card.done::before   { background: var(--green);  box-shadow: 0 0 8px rgba(26,90,71,.4); }
+body.light .card--highlight     { border-color: rgba(26,79,122,.2); }
 body.light .card-bar            { background: var(--surface2); }
 
 /* Info / historial en claro */
