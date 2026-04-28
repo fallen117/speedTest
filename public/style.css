@@ -191,7 +191,7 @@ main {
 
 .gauge-value {
   font-family: var(--font-mono);
-  font-size: 2.8rem;
+  font-size: 2.5rem;
   font-weight: 700;
   line-height: 1;
   color: #e0e0e0;
@@ -512,7 +512,7 @@ footer {
   /* Resto del layout */
   .cards-grid { grid-template-columns: 1fr; }
   .gauge-wrap { width: 260px; height: 175px; }
-  .gauge-value { font-size: 2.8rem; }
+  .gauge-value { font-size: 2.5rem; }
   main { padding: 1.5rem 1rem 3rem; }
 }
 
@@ -567,7 +567,8 @@ body.light .logo strong { color: var(--accent); }
 body.light .header-meta { color: var(--text-dim); }
 
 /* Gauge texto en claro */
-body.light .gauge-value { text-shadow: 0 0 20px rgba(13,110,253,.25); }
+body.light .gauge-value { text-shadow: 0 0 20px rgba(13,110,253,.25); 
+                          color: #3a8ccf;}
 
 /* Botón INICIAR en claro */
 body.light .btn-start {
