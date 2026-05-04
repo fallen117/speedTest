@@ -4,18 +4,18 @@
 ───────────────────────────────────────────── */
 
 :root {
-  --bg:        #050505;
-  --surface:   #0a0a0a;
-  --surface2:  #121212;
-  --border:    #1a1a2e;
-  --accent:    #3a8ccf;
-  --accent2:   #d94a7b;
-  --green:     #2ec4a0;
-  --yellow:    #e0b030;
-  --text:      #e0e0e0;
-  --text-dim:  #707070;
-  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
-  --font-body: 'Barlow', sans-serif;
+  --bg:        #0a0a0a;
+  --surface:   rgba(30,30,30,.65);
+  --surface2:  rgba(40,40,40,.5);
+  --border:    rgba(80,80,80,.3);
+  --accent:    #64aaff;
+  --accent2:   #ff6b9d;
+  --green:     #5eead4;
+  --yellow:    #fbbf24;
+  --text:      #f5f5f7;
+  --text-dim:  #8e8e93;
+  --font-mono: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: 'SF Pro Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-cond: 'Barlow Condensed', sans-serif;
 }
 
@@ -30,6 +30,8 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* ── Background with blur gradients ── */
@@ -38,10 +40,10 @@ body::before {
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse 80% 60% at 15% 20%, rgba(46,196,160,.12) 0%, transparent 50%),
-    radial-gradient(ellipse 70% 50% at 85% 80%, rgba(58,140,207,.1) 0%, transparent 50%),
-    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(46,196,160,.05) 0%, transparent 60%),
-    #050505;
+    radial-gradient(ellipse 80% 60% at 15% 20%, rgba(94,234,212,.15) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 50% at 85% 80%, rgba(100,170,255,.12) 0%, transparent 50%),
+    radial-gradient(ellipse 60% 40% at 50% 50%, rgba(94,234,212,.06) 0%, transparent 60%),
+    #0a0a0a;
   pointer-events: none;
   z-index: 0;
 }
@@ -53,10 +55,11 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.2rem 2.5rem;
+  padding:1.2rem 2.5rem;
   border-bottom: 1px solid var(--border);
-  background: rgba(5,5,5,.8);
-  backdrop-filter: blur(12px);
+  background: rgba(10,10,10,.75);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
   transition: background .3s, border-color .3s;
 }
 
@@ -191,12 +194,12 @@ main {
 
 .gauge-value {
   font-family: var(--font-mono);
-  font-size: 2.5rem;
-  font-weight: 700;
+  font-size: 3rem;
+  font-weight: 500;
   line-height: 1;
-  color: #e0e0e0;
-  letter-spacing: -.02em;
-  text-shadow: 0 0 20px rgba(30,58,95,.4);
+  color: var(--text);
+  letter-spacing: -.03em;
+  text-shadow: 0 0 24px rgba(100,170,255,.3);
 }
 
 .gauge-unit {
@@ -229,21 +232,26 @@ main {
   background: transparent;
   border: 2px solid var(--accent);
   color: var(--accent);
-  font-family: var(--font-cond);
-  font-size: 1.1rem;
-  font-weight: 700;
-  letter-spacing: .3em;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: .2em;
   padding: .85rem 3rem;
   cursor: pointer;
-  clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
-  transition: background .2s, color .2s, box-shadow .2s;
+  border-radius: 980px;
+  transition: background .2s, color .2s, box-shadow .2s, transform .1s;
   overflow: hidden;
 }
 
 .btn-start:hover:not(:disabled) {
   background: var(--accent);
   color: var(--bg);
-  box-shadow: 0 0 30px rgba(0,229,255,.5);
+  box-shadow: 0 0 30px rgba(100,170,255,.4);
+  transform: scale(1.02);
+}
+
+.btn-start:active:not(:disabled) {
+  transform: scale(.98);
 }
 
 .btn-start:disabled {
@@ -275,7 +283,7 @@ main {
   font-family: var(--font-mono);
   font-size: .8rem;
   color: var(--text-dim);
-  letter-spacing: .1em;
+  letter-spacing: .05em;
   min-height: 1.2em;
   transition: color .3s;
 }
@@ -294,14 +302,22 @@ main {
 
 .card {
   background: var(--surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border);
+  border-radius: 12px;
   padding: 1.2rem 1.4rem;
   display: flex;
   gap: 1rem;
   align-items: flex-start;
   position: relative;
   overflow: hidden;
-  transition: border-color .3s, box-shadow .3s;
+  transition: border-color .3s, box-shadow .3s, transform .2s;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,.3);
 }
 
 .card::before {
@@ -316,7 +332,7 @@ main {
 .card.active::before  { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
 .card.done::before    { background: var(--green);  box-shadow: 0 0 8px var(--green); }
 
-.card--highlight { border-color: rgba(0,229,255,.15); }
+.card--highlight { border-color: rgba(100,170,255,.18); }
 
 .card-icon {
   font-size: 1.8rem;
@@ -342,14 +358,15 @@ main {
 }
 
 .card-value {
-  font-family: var(--font-cond);
-  font-size: 2.2rem;
-  font-weight: 900;
+  font-family: var(--font-mono);
+  font-size: 2.4rem;
+  font-weight: 500;
   line-height: 1;
-  color: #00e5ff;
+  color: var(--accent);
   display: flex;
   align-items: baseline;
   gap: .3rem;
+  letter-spacing: -.02em;
 }
 
 .card-value small {
@@ -360,13 +377,13 @@ main {
   letter-spacing: .1em;
 }
 
-.card.done .card-value { color: var(--green); text-shadow: 0 0 12px rgba(0,255,136,.3); }
+.card.done .card-value { color: var(--green); text-shadow: 0 0 12px rgba(94,234,212,.3); }
 
 .card-bar {
   margin-top: .6rem;
-  height: 3px;
-  background: var(--surface2);
-  border-radius: 2px;
+  height: 4px;
+  background: rgba(80,80,80,.2);
+  border-radius: 4px;
   overflow: hidden;
 }
 
@@ -374,18 +391,21 @@ main {
   height: 100%;
   width: 0%;
   background: var(--accent);
-  border-radius: 2px;
+  border-radius: 4px;
   transition: width .5s cubic-bezier(.4,0,.2,1), background .3s;
-  box-shadow: 0 0 6px var(--accent);
+  box-shadow: 0 0 8px var(--accent);
 }
 
-.card.done .card-bar-fill { background: var(--green); box-shadow: 0 0 6px var(--green); }
+.card.done .card-bar-fill { background: var(--green); box-shadow: 0 0 8px var(--green); }
 
 /* ── Info section ── */
 .info-section,
 .history-section {
   background: var(--surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--border);
+  border-radius: 12px;
   padding: 1.5rem;
   margin-bottom: 1.5rem;
 }
@@ -448,7 +468,7 @@ main {
 
 .history-table td {
   padding: .5rem .8rem;
-  border-bottom: 1px solid rgba(31,45,61,.5);
+  border-bottom: 1px solid rgba(80,80,80,.3);
   color: var(--text);
 }
 
@@ -468,6 +488,8 @@ footer {
   font-size: .7rem;
   color: var(--text-dim);
   letter-spacing: .1em;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 /* ── Responsive ── */
@@ -520,6 +542,113 @@ footer {
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+.gauge-section  { animation: fade-up .5s ease both; }
+.start-wrap     { animation: fade-up .5s .1s ease both; }
+.cards-grid     { animation: fade-up .5s .2s ease both; }
+.info-section   { animation: fade-up .5s .3s ease both; }
+
+/* ═════════════════════════════════════════
+   MODO CLARO — body.light
+   Apple-style design with blur effects
+═════════════════════════════════════════ */
+body.light {
+  --bg:       #f5f5f7;
+  --surface:   rgba(255,255,255,.7);
+  --surface2:  rgba(240,240,245,.6);
+  --border:    rgba(200,200,205,.4);
+  --accent:    #007aff;
+  --accent2:  #ff3b30;
+  --green:     #34c759;
+  --yellow:    #ffcc00;
+  --text:      #1d1d1f;
+  --text-dim:  #86868b;
+}
+
+/* Gradientes de fondo en claro */
+body.light::before {
+  background:
+    radial-gradient(ellipse 80% 60% at 15% 20%, rgba(52,199,89,.12) 0%, transparent 50%),
+    radial-gradient(ellipse 70% 50% at 85% 80%, rgba(0,122,255,.1) 0%, transparent 50%),
+    #f5f5f7;
+}
+
+/* Header en claro */
+body.light header {
+  background: rgba(255,255,255,.8);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom-color: var(--border);
+}
+
+/* Logo en claro */
+body.light .logo { color: var(--text); }
+body.light .logo-icon { color: var(--accent); }
+body.light .logo strong { color: var(--accent); }
+
+/* Header meta en claro */
+body.light .header-meta { color: var(--text-dim); }
+
+/* Gauge texto en claro */
+body.light .gauge-value { text-shadow: 0 0 20px rgba(0,122,255,.25); color: var(--text); }
+
+/* Botón INICIAR en claro */
+body.light .btn-start {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+body.light .btn-start:hover:not(:disabled) {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 0 24px rgba(0,122,255,.35);
+}
+body.light .btn-start:disabled {
+  border-color: var(--text-dim);
+  color: var(--text-dim);
+}
+
+/* Cards en claro */
+body.light .card {
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-color: var(--border);
+  box-shadow: 0 1px 8px rgba(0,0,0,.04);
+}
+body.light .card:hover {
+  box-shadow: 0 8px 32px rgba(0,0,0,.08);
+}
+body.light .card::before { background: var(--border); }
+body.light .card.active::before { background: var(--accent); box-shadow: 0 0 8px rgba(0,122,255,.4); }
+body.light .card.done::before   { background: var(--green);  box-shadow: 0 0 8px rgba(52,199,89,.4); }
+body.light .card--highlight     { border-color: rgba(0,122,255,.18); }
+body.light .card-bar            { background: rgba(200,200,205,.3); }
+
+/* Info / historial en claro */
+body.light .info-section,
+body.light .history-section {
+  background: var(--surface);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-color: var(--border);
+  box-shadow: 0 1px 8px rgba(0,0,0,.04);
+}
+
+body.light .history-table td { border-bottom-color: var(--border); }
+body.light .history-table tbody tr:hover { background: var(--surface2); }
+
+/* Switcher activo en claro */
+body.light .theme-btn.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* Footer en claro */
+body.light footer {
+  border-top-color: var(--border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .gauge-section  { animation: fade-up .5s ease both; }
