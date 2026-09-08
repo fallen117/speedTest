@@ -20,3 +20,6 @@ Thumbs.db
 
 # Accidental artifacts
 d
+
+# Deployment config (Render) — deprecated, app runs with Docker
+render.yaml

@@ -1,6 +1,18 @@
-**Comandos
-Acción	Comando
-Dev frontend	npm run dev:client (Vite en :5173 con proxy a :3000)
-Dev backend	npm run dev:server
-Build producción	npm run build
-Producción	npm start
+SpeedTest.
+
+### Correr app (docker)
+# Levantar la app (desde la raíz del proyecto)
+docker compose up --build
+
+# Abrir
+# → http://localhost:8080
+
+# Ver logs del backend / nginx
+docker compose logs -f node
+docker compose logs -f nginx
+
+# Detener
+docker compose down
+
+# Detener y borrar imágenes/volúmenes
+docker compose down --rmi all
