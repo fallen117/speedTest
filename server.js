@@ -5,8 +5,8 @@ const http    = require('http');
 const app     = express();
 const PORT = process.env.PORT || 3000;
 
-// Serve static frontend files
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static frontend files (React build)
+app.use(express.static(path.join(__dirname, 'client', 'dist')));
 
 // ─── Proxy de descarga → Cloudflare Speed Test CDN ───────────────────────────
 // El frontend pide /api/download-proxy y el servidor descarga desde
@@ -105,8 +105,14 @@ app.get('/api/info', (req, res) => {
   });
 });
 
+// SPA fallback — any non-API route serves index.html
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+});
+
 app.listen(PORT, () => {
   console.log(`\n🚀  Speed Test Server corriendo en http://localhost:${PORT}`);
+  console.log(`    Frontend: React (client/dist)`);
   console.log(`    Descarga: proxy hacia speed.cloudflare.com (medición real)`);
   console.log(`    Subida:   servidor local (mide tu WAN de salida)\n`);
 });
