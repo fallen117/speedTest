@@ -15,6 +15,7 @@ docker compose down
 docker compose down --rmi all
 
 ## Arquitectura docker
+```
 docker-compose.yml  ← orquestador (une ambos)
    │
    ├── servicio "node"
@@ -28,3 +29,4 @@ docker-compose.yml  ← orquestador (une ambos)
               etapa 1: node:20-alpine → compila React (Vite → dist/)
               etapa 2: nginx:alpine  → sirve los estáticos
               papel: frontend + reverse proxy /api → node:3000
+```              
