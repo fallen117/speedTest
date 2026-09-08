@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Build artifacts
+client/dist/
+
+# Git metadata
+.git/
+
+# Accidental artifacts / logs
+d
+*.log
+
+# Deployment config for Render (not used inside containers)
+render.yaml

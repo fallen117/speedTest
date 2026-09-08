@@ -1,0 +1,20 @@
+services:
+  node:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+    expose:
+      - "3000"
+    restart: unless-stopped
+
+  nginx:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    depends_on:
+      - node
+    ports:
+      - "${HOST_PORT:-8080}:80"
+    restart: unless-stopped
