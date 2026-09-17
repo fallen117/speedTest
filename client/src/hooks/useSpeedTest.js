@@ -295,7 +295,7 @@ export function useSpeedTest() {
 
       await sleep(300)
       setGauge(dlSpeed, 200, 'DESCARGA Mbps', 'var(--green)')
-      setStatus(`✓ Test completado — ↓ ${formatMbps(dlSpeed)} Mbps  ↑ ${formatMbps(ulSpeed)} Mbps`, 'done')
+      setStatus(`✓ Test finalizado — ↓ ${formatMbps(dlSpeed)} Mbps  ↑ ${formatMbps(ulSpeed)} Mbps`, 'done')
 
       // ── Save history ──
       setHistory(prev => {
