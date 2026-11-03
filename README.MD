@@ -89,6 +89,3 @@ La organización del proyecto responde a una separación clara de responsabilida
 - `server.js`: lógica del servidor y endpoints de la API.
 - `client/`: código fuente del frontend.
 
-## Resumen
-
-La aplicación combina un frontend moderno con un backend ligero y una capa de proxy para ofrecer pruebas de velocidad de red en un entorno fácilmente desplegable con Docker. La arquitectura está diseñada para separar claramente la experiencia del usuario, la lógica de medición y la entrega de recursos web.
